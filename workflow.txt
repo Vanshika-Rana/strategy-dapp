@@ -1,0 +1,22 @@
+------------------------------------------ WEBAPP WORKFLOW -------------------------------------------
+
+Page 1 - Connect Wallet 
+    - Title
+    - Button: Connect Wallet (web3modal v2) - done
+    - Display Addresses: EOA Address, Avocado Address - done
+    - Dispaly Balances: Polygon, Arbitrium
+    - Send Matic on Polygon -> Page 2 -done
+    - Send Arb on Arbitrium -> Page 3 - done 
+
+Page 2 - Sending Matic
+    - Title 
+    - Reciever's Address
+    - Amount of tokens
+    - Send Button (through Avocado Address)
+
+Page 3 - Send Arb
+    - Title 
+    - Reciever's Address
+    - Amount of tokens
+    - Send Button (through Avocado Address)
+------------------------------------------------------------------------------------------------------
