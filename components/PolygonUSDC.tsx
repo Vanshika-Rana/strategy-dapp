@@ -66,8 +66,11 @@ const types = {
 interface PolygonUSDCProps {
 	connectedAddress: string;
 	avocadoAddress: string;
-  }
-export default function PolygonUSDC({ connectedAddress, avocadoAddress }: PolygonUSDCProps) {
+}
+export default function PolygonUSDC({
+	connectedAddress,
+	avocadoAddress,
+}: PolygonUSDCProps) {
 	const [receiver, setReceiver] = useState("");
 	const [amount, setAmount] = useState("0");
 	//const [avocadoAddress, setAvocadoAddress] = useState("");
@@ -103,11 +106,11 @@ export default function PolygonUSDC({ connectedAddress, avocadoAddress }: Polygo
 		console.log("Chain ID:", chainId);
 
 		// Should be connected to chainId 634 (https://rpc.avocado.instadapp.io), before doing any transaction
-
-		// request connection
-		const provider = new ethers.providers.JsonRpcProvider(
-			"https://rpc.avocado.instadapp.io"
+		const provider = new ethers.providers.Web3Provider(
+			window.ethereum as ethers.providers.ExternalProvider
 		);
+		// request connection
+
 		console.log("Initialized provider");
 
 		const avoForwarderAddress =
@@ -173,11 +176,11 @@ export default function PolygonUSDC({ connectedAddress, avocadoAddress }: Polygo
 			: 1;
 		console.log("Required Signers:", requiredSigners);
 
-		if (requiredSigners > 1) {
-			throw new Error(
-				"Example is for Avocado personal with only owner as signer"
-			);
-		}
+		// if (requiredSigners > 1) {
+		// 	throw new Error(
+		// 		"Example is for Avocado personal with only owner as signer"
+		// 	);
+		// }
 		console.log("Checking required signers...");
 
 		let txPayload; // Declare txPayload variable outside the try block
@@ -188,7 +191,7 @@ export default function PolygonUSDC({ connectedAddress, avocadoAddress }: Polygo
 			const usdcAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 			console.log("USDC Address:", usdcAddress);
 
-			const usdcAmount = ethers.utils.parseUnits("10", 6);
+			const usdcAmount = ethers.utils.parseUnits(amount, 6);
 			console.log("USDC Amount:", usdcAmount.toString());
 
 			// sending to owner EOA address
@@ -233,23 +236,26 @@ export default function PolygonUSDC({ connectedAddress, avocadoAddress }: Polygo
 				},
 			};
 			console.log("Transaction Payload:", txPayload);
+			console.log("here");
 
 			// -------------------------------- Estimate fee -----------------------------------
 
-			const estimate = await avocadoProvider.send(
-				"txn_multisigEstimateFeeWithoutSignature",
-				[
-					{
-						message: txPayload, // transaction payload as built in previous step
-						owner: connectedAddress, // avocado owner EOA address
-						safe: avocadoAddress, // avocado address
-						index: 0,
-						targetChainId: chainId,
-					},
-				]
-			);
-			// convert fee from hex and 1e18, is in USDC:
-			console.log("Estimate:", Number(estimate.fee) / 1e18);
+			// const estimate = await avocadoProvider.send(
+			// 	"txn_multisigEstimateFeeWithoutSignature",
+			// 	[
+			// 		{
+			// 			message: txPayload, // transaction payload as built in previous step
+			// 			owner: connectedAddress, // avocado owner EOA address
+			// 			safe: avocadoAddress, // avocado address
+			// 			index: 0,
+			// 			targetChainId: chainId,
+			// 		},
+			// 	]
+			// );
+
+			// // convert fee from hex and 1e18, is in USDC:
+			// console.log("Estimate:", Number(estimate.fee) / 1e18);
+			// console.log("here");
 		} catch (error) {
 			console.error("Error:", error);
 			return; // Return early in case of error
@@ -275,10 +281,12 @@ export default function PolygonUSDC({ connectedAddress, avocadoAddress }: Polygo
 		if ((await provider.getNetwork()).chainId !== 634) {
 			throw new Error("Not connected to Avocado network");
 		}
+
 		if ((await avoSigner.getAddress()) !== ownerAddress) {
 			throw new Error("Not connected with expected owner address");
 		}
 
+		console.log("txn payload before sign", txPayload);
 		// transaction payload as built in previous step
 		const signature = await avoSigner._signTypedData(
 			domain,
