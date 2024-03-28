@@ -86,11 +86,11 @@ export default function Home() {
 						{renderAddressItem("Avocado Address", avocadoAddress)}
 						<Link
 							href={{
-								pathname: "/polygonMatic",
+								pathname: "/polygonUSDC",
 								query: { connectedAddress, avocadoAddress },
 							}}>
 							<button className='flex items-center justify-center gap-2 px-6 py-2 font-semibold text-white transition-transform duration-500 transform rounded-lg bg-emerald-950 hover:scale-95'>
-								<span>Send Matic on Polygon</span>
+								<span>Send USDC on Polygon</span>
 							</button>
 						</Link>
 						<Link href='/arbitrumArb'>
