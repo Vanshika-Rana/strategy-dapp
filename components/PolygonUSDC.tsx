@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers"; // ethers@v5
 import { useSearchParams } from "next/navigation";
-import avocadoV1ABI from "../../constants/avocado-v1-abi.json";
-import avoForwarderV1ABI from "../../constants/avo-forwarder-v1-abi.json";
-
+import avocadoV1ABI from "../constants/avocado-v1-abi.json";
+import avoForwarderV1ABI from "../constants/avo-forwarder-v1-abi.json";
+import { Suspense } from "react";
 // -------------------------------- Types etc. -----------------------------------
 
 interface ITransactionParams {
@@ -63,12 +63,15 @@ const types = {
 		{ name: "value", type: "uint256" },
 	],
 };
-
-export default function SendTokens() {
+interface PolygonUSDCProps {
+	connectedAddress: string;
+	avocadoAddress: string;
+  }
+export default function PolygonUSDC({ connectedAddress, avocadoAddress }: PolygonUSDCProps) {
 	const [receiver, setReceiver] = useState("");
 	const [amount, setAmount] = useState("0");
-	const [avocadoAddress, setAvocadoAddress] = useState("");
-	const [connectedAddress, setConnectedAddress] = useState("");
+	//const [avocadoAddress, setAvocadoAddress] = useState("");
+	//const [connectedAddress, setConnectedAddress] = useState("");
 	const [isDeployed, setIsDeployed] = useState(false);
 	const [nonce, setNonce] = useState("0");
 	const searchParams = useSearchParams();
@@ -330,10 +333,10 @@ export default function SendTokens() {
 		}
 	};
 
-	useEffect(() => {
-		setConnectedAddress(initialConnectedAddress);
-		setAvocadoAddress(initialAvocadoAddress);
-	}, [initialConnectedAddress, initialAvocadoAddress]);
+	// useEffect(() => {
+	// 	setConnectedAddress(initialConnectedAddress);
+	// 	setAvocadoAddress(initialAvocadoAddress);
+	// }, [initialConnectedAddress, initialAvocadoAddress]);
 	useEffect(() => {
 		const checkDeployment = async () => {
 			try {

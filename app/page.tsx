@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import Image from "next/image";
 import { IoCopyOutline } from "react-icons/io5";
 import { useWeb3Modal, useWeb3ModalProvider } from "@web3modal/ethers5/react";
@@ -13,6 +14,7 @@ import {
 } from "react";
 import avoForwarderV1ABI from "../constants/avo-forwarder-v1-abi.json";
 import Link from "next/link";
+import PolygonUSDC from "../components/PolygonUSDC";
 const chains = {
 	avocado: {
 		rpcUrl: "https://rpc.avocado.instadapp.io/",
@@ -28,6 +30,7 @@ export default function Home() {
 	const [avocadoAddress, setAvocadoAddress] = useState("");
 	const { open } = useWeb3Modal();
 	const { walletProvider } = useWeb3ModalProvider();
+  const [showSendComponent, setShowSendComponent] = useState(false);
 
 	const generateWallet = async () => {
 		if (walletProvider) {
@@ -78,27 +81,32 @@ export default function Home() {
 					</button>
 				)}
 				{connectedAddress && (
-					<div className='grid w-full grid-cols-1 gap-4 mt-8 md:grid-cols-2'>
-						{renderAddressItem(
-							"Connected EOA Address",
-							connectedAddress
-						)}
-						{renderAddressItem("Avocado Address", avocadoAddress)}
-						<Link
-							href={{
-								pathname: "/polygonUSDC",
-								query: { connectedAddress, avocadoAddress },
-							}}>
-							<button className='flex items-center justify-center gap-2 px-6 py-2 font-semibold text-white transition-transform duration-500 transform rounded-lg bg-emerald-950 hover:scale-95'>
-								<span>Send USDC on Polygon</span>
-							</button>
-						</Link>
+          <div className='grid w-full grid-cols-1 gap-4 mt-8 md:grid-cols-2'>
+            {/* Existing code... */}
+            {showSendComponent ? (
+              <PolygonUSDC connectedAddress={connectedAddress} avocadoAddress={avocadoAddress} />
+            ) : (
+              <>
+                {renderAddressItem(
+                  "Connected EOA Address",
+                  connectedAddress
+                )}
+                {renderAddressItem("Avocado Address", avocadoAddress)}
+                <button
+                  onClick={() => setShowSendComponent(true)} // Toggle the visibility of the component
+                  className='flex items-center justify-center gap-2 px-6 py-2 font-semibold text-white transition-transform duration-500 transform rounded-lg bg-emerald-950 hover:scale-95'>
+                  <span>Send USDC on Polygon</span>
+                </button>
+
 						<Link href='/arbitrumArb'>
 							<button className='flex items-center justify-center gap-2 px-6 py-2 font-semibold text-white transition-transform duration-500 transform rounded-lg bg-emerald-950 hover:scale-95'>
 								<span>Send Arb on Arbitrum</span>
 							</button>
 						</Link>
-					</div>
+            </>
+            )}
+          </div>
+					
 				)}
 			</section>
 		</main>
